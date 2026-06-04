@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UX Audit: The Attention Economy, Megha Kumar</title>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=DM+Serif+Display:ital@0;1&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --pink: #EF3274;
+    --pink-dark: #C4007A;
+    --green: #7EF285;
+    --green-dark: #2d9e35;
+    --blue: #0057FF;
+    --yellow: #FFE600;
+    --red: #FF2020;
+    --black: #080808;
+    --white: #F5F0E8;
+    --serif: 'DM Serif Display', Georgia, serif;
+    --display: 'Black Han Sans', sans-serif;
+    --mono: 'Space Mono', monospace;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--white); font-family: var(--mono); overflow-x: hidden; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1rem 2.5rem;
+    background: var(--black);
+    border-bottom: 3px solid var(--pink);
+  }
+  nav .logo { font-family: var(--display); font-size: 1.1rem; color: var(--green); text-decoration: none; letter-spacing: 0.05em; }
+  nav ul { list-style: none; display: flex; gap: 2rem; }
+  nav ul a { font-size: 0.75rem; color: var(--white); text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; }
+  nav ul a:hover { color: var(--pink); }
+  .nav-back { font-size: 0.7rem; color: #aaa; text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; display: flex; align-items: center; gap: 0.5rem; }
+  .nav-back:hover { color: var(--green); }
+
+  /* HERO */
+  .case-hero {
+    min-height: 100vh;
+    background: var(--black);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 8rem 2.5rem 5rem;
+    position: relative; overflow: hidden;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  .case-hero-label {
+    font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--pink); margin-bottom: 1.5rem;
+    border-left: 3px solid var(--pink); padding-left: 0.75rem;
+    opacity: 0; animation: fadeUp 0.6s 0.1s forwards;
+  }
+  .case-hero h1 {
+    font-family: var(--display);
+    font-size: clamp(3rem, 8vw, 7rem);
+    line-height: 0.92;
+    color: var(--white);
+    margin-bottom: 1.5rem;
+    max-width: 900px;
+    opacity: 0; animation: fadeUp 0.6s 0.25s forwards;
+  }
+  .case-hero h1 em {
+    font-family: var(--serif); font-style: italic;
+    color: var(--pink); display: block;
+  }
+  .case-hero-sub {
+    font-family: var(--serif); font-style: italic;
+    font-size: 1.25rem; color: var(--white); line-height: 1.6;
+    max-width: 600px; margin-bottom: 3rem;
+    opacity: 0; animation: fadeUp 0.6s 0.4s forwards;
+  }
+  .case-meta {
+    display: flex; gap: 3rem; flex-wrap: wrap;
+    opacity: 0; animation: fadeUp 0.6s 0.55s forwards;
+  }
+  .meta-item { }
+  .meta-label { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: #aaa; margin-bottom: 0.3rem; }
+  .meta-value { font-size: 0.8rem; color: var(--green); letter-spacing: 0.05em; }
+
+  /* VIDEO EMBED PLACEHOLDER */
+  .video-section {
+    background: #0a0a0a;
+    padding: 5rem 2.5rem;
+    border-bottom: 1px solid #1a1a1a;
+    position: relative; overflow: hidden;
+  }
+  .video-wrap {
+    max-width: 900px; margin: 0 auto;
+    position: relative;
+  }
+  .video-placeholder {
+    width: 100%; aspect-ratio: 16/9;
+    background: #111;
+    border: 1px solid #222;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .video-placeholder-inner {
+    text-align: center; z-index: 2; position: relative;
+  }
+  .video-play { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: #888; margin-top: 1rem; }
+  .video-label { position: absolute; top: 1.5rem; left: 1.5rem; font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--pink); }
+  /* animated circles in video placeholder */
+  .vc { position: absolute; border-radius: 50%; }
+
+  /* CONTENT SECTIONS */
+  .case-section { padding: 6rem 2.5rem; border-bottom: 1px solid #111; position: relative; overflow: hidden; }
+  .case-section.light { background: var(--white); color: var(--black); }
+  .case-section.dark { background: var(--black); }
+  .case-section.mid { background: #0d0d0d; }
+
+  .section-eyebrow { font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--pink); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem; }
+  .section-eyebrow::after { content: ''; flex: 1; height: 1px; background: #1a1a1a; max-width: 80px; }
+  .case-section.light .section-eyebrow { color: var(--pink-dark); }
+  .case-section.light .section-eyebrow::after { background: #ddd; }
+
+  .case-section h2 { font-family: var(--display); font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1; margin-bottom: 2rem; color: var(--white); }
+  .case-section.light h2 { color: var(--black); }
+
+  .prose { font-family: var(--serif); font-size: 1.1rem; line-height: 1.8; color: var(--white); max-width: 680px; }
+  .prose p + p { margin-top: 1.2rem; }
+  .prose em { color: var(--green); font-style: italic; }
+  .prose strong { color: var(--white); font-family: var(--mono); font-size: 0.9rem; font-style: normal; }
+  .case-section.light .prose { color: #444; }
+  .case-section.light .prose strong { color: var(--black); }
+  .case-section.light .prose em { color: var(--green-dark); }
+
+  /* THESIS BLOCK */
+  .thesis-block {
+    border-left: 4px solid var(--pink);
+    padding: 2rem 2.5rem;
+    background: #0d0d0d;
+    margin: 3rem 0;
+    max-width: 780px;
+  }
+  .thesis-block p {
+    font-family: var(--serif); font-style: italic;
+    font-size: 1.3rem; line-height: 1.7; color: var(--white);
+  }
+  .thesis-block p em { color: var(--pink); font-style: normal; font-family: var(--display); font-size: 1.1rem; }
+
+  /* RESEARCH GRID */
+  .research-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: #1a1a1a; margin-top: 3rem; }
+  .research-cell { background: #080808; padding: 2rem 1.5rem; }
+  .research-num { font-size: 2rem; font-family: var(--display); color: var(--pink); margin-bottom: 0.5rem; line-height: 1; }
+  .research-desc { font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: #ccc; line-height: 1.5; }
+
+  /* AFFINITY MAP */
+  .affinity-map { margin-top: 3rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .affinity-cluster { border: 1px solid #1e1e1e; padding: 1.5rem; position: relative; }
+  .affinity-cluster::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; }
+  .ac-emptiness::before { background: var(--blue); }
+  .ac-time::before { background: var(--yellow); }
+  .ac-regret::before { background: var(--pink); }
+  .affinity-theme { font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1rem; }
+  .ac-emptiness .affinity-theme { color: var(--blue); }
+  .ac-time .affinity-theme { color: var(--yellow); }
+  .ac-regret .affinity-theme { color: var(--pink); }
+  .affinity-quotes { display: flex; flex-direction: column; gap: 0.75rem; }
+  .affinity-quote { font-family: var(--serif); font-style: italic; font-size: 0.85rem; color: #ddd; line-height: 1.5; border-left: 2px solid #1e1e1e; padding-left: 0.75rem; }
+
+  /* AUDIT PATTERNS */
+  .patterns-list { margin-top: 3rem; display: flex; flex-direction: column; gap: 1px; background: #1a1a1a; }
+  .pattern-item { background: #080808; padding: 2.5rem; display: grid; grid-template-columns: 80px 1fr 1fr; gap: 2.5rem; align-items: start; transition: background 0.2s; }
+  .pattern-item:hover { background: #0d0d0d; }
+  .pattern-num { font-family: var(--display); font-size: 2.5rem; color: #1a1a1a; line-height: 1; padding-top: 0.25rem; }
+  .pattern-item:hover .pattern-num { color: var(--pink); }
+  .pattern-left { }
+  .pattern-name { font-family: var(--display); font-size: 1.2rem; color: var(--white); margin-bottom: 0.5rem; line-height: 1.1; }
+  .pattern-tag { display: inline-block; font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.2rem 0.5rem; border: 1px solid var(--pink); color: var(--pink); margin-bottom: 1rem; }
+  .pattern-mechanism { font-family: var(--serif); font-style: italic; font-size: 0.95rem; color: var(--white); line-height: 1.65; }
+  .pattern-right { }
+  .pattern-cost-label { font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--green); margin-bottom: 0.5rem; }
+  .pattern-cost { font-family: var(--serif); font-size: 0.95rem; color: var(--white); line-height: 1.6; margin-bottom: 1.5rem; }
+  .pattern-cite { font-size: 0.65rem; color: #888; letter-spacing: 0.05em; font-style: italic; }
+
+  /* MOCKUP SECTION */
+  .redesign-grid { display: flex; flex-direction: column; gap: 6rem; margin-top: 4rem; }
+  .redesign-item { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+  .redesign-item:nth-child(even) { direction: rtl; }
+  .redesign-item:nth-child(even) > * { direction: ltr; }
+  .redesign-text { }
+  .redesign-num { font-family: var(--display); font-size: 4rem; color: #111; line-height: 1; margin-bottom: 1rem; }
+  .redesign-title { font-family: var(--display); font-size: 1.5rem; color: var(--white); margin-bottom: 0.5rem; line-height: 1.1; }
+  .redesign-targets { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--pink); margin-bottom: 1.5rem; }
+  .redesign-body { font-family: var(--serif); font-style: italic; font-size: 1rem; color: var(--white); line-height: 1.7; margin-bottom: 1.5rem; }
+  .redesign-why { border-left: 2px solid var(--green); padding-left: 1rem; }
+  .redesign-why-label { font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--green); margin-bottom: 0.4rem; }
+  .redesign-why-text { font-size: 0.78rem; color: #ccc; line-height: 1.6; }
+  .business-case { margin-top: 1rem; border-left: 2px solid var(--yellow); padding-left: 1rem; }
+  .business-case-label { font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--yellow); margin-bottom: 0.4rem; }
+  .business-case-text { font-size: 0.78rem; color: #ccc; line-height: 1.6; }
+
+  /* PHONE MOCKUP */
+  .phone-mockup {
+    width: 260px; margin: 0 auto;
+    background: #0f0f0f;
+    border: 1.5px solid #222;
+    border-radius: 32px;
+    padding: 1rem;
+    position: relative;
+    box-shadow: 0 0 60px rgba(255,45,155,0.08);
+  }
+  .phone-notch { width: 80px; height: 6px; background: #1a1a1a; border-radius: 3px; margin: 0 auto 1rem; }
+  .phone-screen { background: #000; border-radius: 20px; overflow: hidden; min-height: 380px; position: relative; }
+  .phone-screen-inner { padding: 1rem; }
+
+  /* TikTok current state mockup */
+  .tiktok-current .phone-screen { background: #000; }
+  .tt-video-fill { width: 100%; height: 340px; background: linear-gradient(160deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); position: relative; display: flex; align-items: flex-end; padding: 1rem; }
+  .tt-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+  .tt-autoplay-badge { position: absolute; top: 0.75rem; right: 0.75rem; font-size: 0.45rem; letter-spacing: 0.1em; text-transform: uppercase; background: var(--red); color: white; padding: 0.15rem 0.4rem; }
+  .tt-info { position: relative; z-index: 2; }
+  .tt-username { font-size: 0.55rem; color: rgba(255,255,255,0.9); margin-bottom: 0.25rem; font-family: var(--mono); }
+  .tt-caption { font-size: 0.5rem; color: rgba(255,255,255,0.6); line-height: 1.4; }
+  .tt-actions { position: absolute; right: 0.75rem; bottom: 4rem; display: flex; flex-direction: column; gap: 1rem; align-items: center; }
+  .tt-action { width: 24px; height: 24px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; }
+  .tt-action-dot { width: 6px; height: 6px; border-radius: 50%; background: white; }
+  .tt-next-indicator { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--red); opacity: 0.8; }
+  .tt-nav { display: flex; justify-content: space-around; padding: 0.5rem 0; border-top: 1px solid #1a1a1a; }
+  .tt-nav-dot { width: 4px; height: 4px; border-radius: 50%; background: #333; }
+  .tt-nav-dot.active { background: white; }
+
+  /* redesign mockup variants */
+  .redesign-screen { padding: 1rem; }
+  .rs-pause { display: flex; align-items: center; justify-content: center; height: 340px; background: #000; }
+  .rs-pause-inner { text-align: center; }
+  .rs-pause-circle { width: 50px; height: 50px; border-radius: 50%; border: 1.5px solid #222; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; }
+  .rs-pause-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(1.4);opacity:0.6;} }
+  .rs-pause-text { font-size: 0.5rem; color: #333; letter-spacing: 0.15em; text-transform: uppercase; }
+
+  .rs-mirror { padding: 1rem; background: #000; min-height: 340px; }
+  .rs-mirror-header { font-size: 0.45rem; color: #333; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1rem; border-bottom: 1px solid #111; padding-bottom: 0.5rem; }
+  .rs-stat-row { display: flex; justify-content: space-between; align-items: baseline; padding: 0.6rem 0; border-bottom: 1px solid #0d0d0d; }
+  .rs-stat-label { font-size: 0.5rem; color: #444; letter-spacing: 0.08em; text-transform: uppercase; }
+  .rs-stat-val { font-family: var(--display); font-size: 1rem; color: var(--white); }
+  .rs-stat-val.warn { color: var(--pink); }
+  .rs-topics { margin-top: 1rem; }
+  .rs-topic-label { font-size: 0.45rem; color: #333; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .rs-topic-pill { display: inline-block; font-size: 0.45rem; padding: 0.2rem 0.5rem; background: #111; color: #444; border: 1px solid #1a1a1a; margin: 0.15rem; letter-spacing: 0.05em; }
+
+  .rs-offramp { padding: 1rem; background: #000; min-height: 340px; position: relative; }
+  .rs-video-thumb { width: 100%; height: 160px; background: linear-gradient(160deg, #1a1a2e, #0f3460); border-radius: 4px; margin-bottom: 0.75rem; position: relative; }
+  .rs-offramp-badge { position: absolute; bottom: 0.5rem; left: 0.5rem; font-size: 0.4rem; letter-spacing: 0.1em; text-transform: uppercase; background: var(--green); color: var(--black); padding: 0.15rem 0.4rem; }
+  .rs-offramp-title { font-size: 0.55rem; color: var(--white); margin-bottom: 0.3rem; line-height: 1.4; }
+  .rs-offramp-meta { font-size: 0.45rem; color: #444; margin-bottom: 0.75rem; }
+  .rs-offramp-btn { width: 100%; padding: 0.5rem; background: transparent; border: 1px solid var(--green); color: var(--green); font-family: var(--mono); font-size: 0.45rem; letter-spacing: 0.12em; text-transform: uppercase; text-align: center; }
+
+  /* ANNOTATION CALLOUT */
+  .annotation { display: flex; gap: 0.75rem; align-items: flex-start; margin-top: 0.75rem; }
+  .annotation-line { width: 20px; height: 1px; background: var(--pink); margin-top: 0.5rem; flex-shrink: 0; }
+  .annotation-text { font-size: 0.65rem; color: #aaa; line-height: 1.5; font-style: italic; }
+
+  /* REFLECTION */
+  .reflection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 3rem; }
+  .reflection-card { padding: 2rem; border: 1px solid #1a1a1a; }
+  .reflection-card-label { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--green); margin-bottom: 1rem; }
+  .reflection-card-body { font-family: var(--serif); font-style: italic; font-size: 0.95rem; color: var(--white); line-height: 1.65; }
+
+  /* MARQUEE */
+  .marquee-strip { padding: 0.65rem 0; overflow: hidden; white-space: nowrap; }
+  .marquee-inner { display: inline-flex; animation: marquee 22s linear infinite; }
+  .marquee-inner span { font-family: var(--display); font-size: 0.85rem; letter-spacing: 0.08em; padding: 0 2rem; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* MIRO BG SHAPES */
+  .miro-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+  @keyframes floatA { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-18px) rotate(8deg); } }
+  @keyframes floatB { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(14px) rotate(-6deg); } }
+  @keyframes floatC { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-10px) scale(1.06); } }
+  .mf-a { animation: floatA 6s ease-in-out infinite; }
+  .mf-b { animation: floatB 8s ease-in-out infinite; }
+  .mf-c { animation: floatC 5s ease-in-out infinite; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* FOOTER */
+  footer { background: var(--black); padding: 1.5rem 2.5rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #1a1a1a; }
+  footer span { font-size: 0.65rem; color: #333; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  @media (max-width: 768px) {
+    .pattern-item { grid-template-columns: 1fr; }
+    .pattern-num { font-size: 1.5rem; }
+    .redesign-item, .redesign-item:nth-child(even) { grid-template-columns: 1fr; direction: ltr; }
+    .research-grid { grid-template-columns: 1fr; }
+    .affinity-map { grid-template-columns: 1fr; }
+    .reflection-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">MK</a>
+  <a href="index.html" class="nav-back">Back to portfolio</a>
+</nav>
+
+<!-- HERO -->
+<section class="case-hero">
+  <svg class="miro-bg" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <ellipse class="mf-a" cx="1000" cy="200" rx="120" ry="80" fill="#EF3274" opacity="0.07" transform="rotate(-15,1000,200)"/>
+    <circle class="mf-b" cx="100" cy="600" r="50" fill="#FFE600" opacity="0.06"/>
+    <circle class="mf-c" cx="200" cy="200" r="20" fill="#EF3274" opacity="0.15"/>
+    <circle class="mf-a" cx="240" cy="240" r="12" fill="#FFE600" opacity="0.12"/>
+    <circle class="mf-b" cx="170" cy="270" r="30" fill="#0057FF" opacity="0.08"/>
+    <polygon class="mf-c" points="950,650 990,720 910,720" fill="#0057FF" opacity="0.1"/>
+    <path class="mf-b" d="M600,100 Q700,60 800,100 Q900,140 1000,100" fill="none" stroke="#EF3274" stroke-width="2" opacity="0.1" stroke-linecap="round"/>
+    <circle class="mf-a" cx="500" cy="700" r="8" fill="#7EF285" opacity="0.2"/>
+    <circle class="mf-b" cx="530" cy="680" r="4" fill="#EF3274" opacity="0.2"/>
+  </svg>
+  <div style="position:relative;z-index:2;">
+    <p class="case-hero-label">UX Audit / Speculative Redesign / 2026</p>
+    <h1 style="font-size:clamp(3rem,7vw,7rem);line-height:1.15;">Cognitive Overwhelm<br><span style="font-size:0.3em;letter-spacing:0.15em;font-style:normal;">and the</span><br><em style="white-space:nowrap;">ATTENTION ECONOMY</em></h1>
+
+    <div class="case-meta">
+      <div class="meta-item">
+        <div class="meta-label">Discipline</div>
+        <div class="meta-value">UX Research + Speculative Design</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Lens</div>
+        <div class="meta-value">Cognitive Science</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Tools</div>
+        <div class="meta-value">Figma · After Effects · Fresco</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Status</div>
+        <div class="meta-value" style="color:var(--pink);">Completed 2026</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEO -->
+<section class="video-section">
+  <div class="video-wrap">
+    <p style="font-family:var(--display);font-size:1.3rem;color:var(--white);letter-spacing:0.08em;margin-bottom:1rem;">Pixels.</p>
+    <video controls style="width:100%;display:block;border:1px solid #222;">
+      <source src="IMG_1606.mp4" type="video/mp4">
+    </video>
+    <p style="font-family:var(--mono);font-size:0.55rem;color:#555;letter-spacing:0.08em;margin-top:0.75rem;">A short animation inspired by Filmbilder's Nuggets.</p>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-strip" style="background:var(--pink);">
+  <div class="marquee-inner">
+    <span style="color:var(--white);">&#9733; Empty calories</span>
+    <span style="color:var(--yellow);">&#9733; Designed to keep you inside</span>
+    <span style="color:var(--white);">&#9733; Nothing lands</span>
+    <span style="color:var(--yellow);">&#9733; Reflective cognition is the casualty</span>
+    <span style="color:var(--white);">&#9733; Empty calories</span>
+    <span style="color:var(--yellow);">&#9733; Designed to keep you inside</span>
+    <span style="color:var(--white);">&#9733; Nothing lands</span>
+    <span style="color:var(--yellow);">&#9733; Reflective cognition is the casualty</span>
+  </div>
+</div>
+
+<!-- SECTION 1: PROBLEM -->
+<section class="case-section dark" id="problem">
+  <svg class="miro-bg" viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <circle class="mf-b" cx="1100" cy="100" r="70" fill="#EF3274" opacity="0.05"/>
+    <circle class="mf-c" cx="80" cy="400" r="40" fill="#FFE600" opacity="0.05"/>
+    <path class="mf-a" d="M400,500 Q500,460 600,500 Q700,540 800,500" fill="none" stroke="#7EF285" stroke-width="2" opacity="0.08" stroke-linecap="round"/>
+  </svg>
+  <div style="position:relative;z-index:1;max-width:1100px;">
+    <p class="section-eyebrow">01: The Problem</p>
+    <h2>The Empty<br>Calories Problem</h2>
+    <div class="thesis-block">
+      <p style="font-style:normal;">Bluntly put, apps like TikTok have architecture that eliminates every gap between stimuli, systematically prevents reflection, elaborative encoding, and retention, resulting in hours of consumption that leave you feeling worse. Which begs the question, what are you getting in return for your time and attention?</p>
+    </div>
+    <div class="prose">
+      <p>The feed is designed to produce constant context-switching. Serious to absurd, devastating to trivial, all with no pause in between. This isn't incidental to the experience, it is the architecture itself. Content flies in and out before it can land, and will leave nothing behind.</p>
+      <p>This isn't a failure of memory or attention on your part. It's the predictable output of a system <strong style="color:var(--green);">engineered to produce exactly this.</strong> The endless lateral stream, the autoplay with no gap, the algorithm calibrated purely to hold you through the next 15 seconds, these are not neutral features. They are decisions that have cognitive consequences.</p>
+      <p>This audit names those consequences precisely, using the cognitive science literature that the people who built these systems also read. Then it proposes what ethical alternatives might look like, not to destroy the product, but to ask what it could be if the user's cognitive wellbeing were a design constraint.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2: RESEARCH -->
+<section class="case-section mid" id="research">
+  <div style="position:relative;z-index:1;max-width:1100px;">
+    <p class="section-eyebrow">02: Research</p>
+    <h2>What Users<br>Actually Say</h2>
+    <div class="prose">
+      <p>Research draws from App Store reviews, Reddit communities (r/nosurf, r/digitalminimalism, r/TikTok), published user testimony videos, platform usage statistics, and the cognitive science literature on attention, memory, and reward. Three themes emerged consistently.</p>
+    </div>
+
+    <div class="research-grid">
+      <div class="research-cell">
+        <div class="research-num">67%</div>
+        <div class="research-desc">of users report spending more time on TikTok than intended in a typical session</div>
+      </div>
+      <div class="research-cell">
+        <div class="research-num">avg<br>95m</div>
+        <div class="research-desc">daily time spent on TikTok per user, more than any other social platform</div>
+      </div>
+      <div class="research-cell">
+        <div class="research-num">&lt; 40%</div>
+        <div class="research-desc">of viewed content is retained after 24 hours in passive, high-volume consumption contexts</div>
+      </div>
+    </div>
+
+    <div class="affinity-map">
+      <div class="affinity-cluster ac-emptiness">
+        <div class="affinity-theme">Theme 1, Emptiness after use</div>
+        <div class="affinity-quotes">
+          <div class="affinity-quote">"I close it and I genuinely can't tell you what I just watched for an hour."</div>
+          <div class="affinity-quote">"It's like eating an entire bag of chips and still feeling hungry."</div>
+          <div class="affinity-quote">"Nothing sticks. I'll see the same video twice and not remember watching it."</div>
+        </div>
+      </div>
+      <div class="affinity-cluster ac-time">
+        <div class="affinity-theme">Theme 2, Time loss without consent</div>
+        <div class="affinity-quotes">
+          <div class="affinity-quote">"I opened it to watch one thing and two hours went by."</div>
+          <div class="affinity-quote">"There's no natural stopping point. It just keeps going."</div>
+          <div class="affinity-quote">"I deleted it three times. I always redownload it."</div>
+        </div>
+      </div>
+      <div class="affinity-cluster ac-regret">
+        <div class="affinity-theme">Theme 3, Regret + helplessness</div>
+        <div class="affinity-quotes">
+          <div class="affinity-quote">"I know it's designed to be addictive. Knowing doesn't help."</div>
+          <div class="affinity-quote">"I feel worse after using it but I keep using it."</div>
+          <div class="affinity-quote">"My attention span is genuinely shorter than it was two years ago."</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: AUDIT -->
+<section class="case-section dark" id="audit">
+  <svg class="miro-bg" viewBox="0 0 1200 900" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <circle class="mf-a" cx="1150" cy="450" r="80" fill="#0057FF" opacity="0.04"/>
+    <circle class="mf-c" cx="60" cy="200" r="35" fill="#EF3274" opacity="0.06"/>
+    <ellipse class="mf-b" cx="600" cy="850" rx="150" ry="40" fill="#FFE600" opacity="0.04" transform="rotate(-5,600,850)"/>
+  </svg>
+  <div style="position:relative;z-index:1;max-width:1100px;">
+    <p class="section-eyebrow">03: The Audit</p>
+    <h2>Five Patterns: One System</h2>
+    <div class="prose" style="margin-bottom:0;">
+      <p>Each pattern below is named, grounded in cognitive science, and mapped to its specific user cost. These are not design accidents, they are structural decisions with known neurological consequences.</p>
+    </div>
+
+    <div class="patterns-list">
+
+      <div class="pattern-item">
+        <div class="pattern-num">01</div>
+        <div class="pattern-left">
+          <div class="pattern-name">Autoplay With Zero Gap</div>
+          <div class="pattern-tag">Attentional Architecture</div>
+          <p class="pattern-mechanism">The Default Mode Network, the brain's reflection system, activates during pauses between tasks. This is when elaborative encoding occurs: the process by which new information gets connected to existing knowledge and stored in long-term memory. Autoplay eliminates every moment where the DMN would naturally engage. The next video begins before the brain has processed the previous one.</p>
+        </div>
+        <div class="pattern-right">
+          <div class="pattern-cost-label">User cost</div>
+          <p class="pattern-cost">Content is experienced but never processed. Hours of consumption that produce no durable understanding of anything watched.</p>
+          <p class="pattern-cite">Buckner et al. (2008), Default mode network; Craik & Lockhart (1972), Elaborative encoding theory</p>
+        </div>
+      </div>
+
+      <div class="pattern-item">
+        <div class="pattern-num">02</div>
+        <div class="pattern-left">
+          <div class="pattern-name">The For You Page: No Accumulation</div>
+          <div class="pattern-tag">Information Architecture</div>
+          <p class="pattern-mechanism">Traditional media, books, documentaries, even longer YouTube videos, builds knowledge cumulatively. Each piece connects to the last. TikTok's FYP is a purely lateral stream: content calibrated to hold attention in the next 15 seconds with zero regard for what came before. There is no arc, no thread, no narrative. Just an infinite series of disconnected stimuli.</p>
+        </div>
+        <div class="pattern-right">
+          <div class="pattern-cost-label">User cost</div>
+          <p class="pattern-cost">No schema formation. Users cannot build coherent understanding of any topic because the feed actively prevents thematic continuity.</p>
+          <p class="pattern-cite">Bartlett (1932), Schema theory; Sweller (1988), Cognitive load theory</p>
+        </div>
+      </div>
+
+      <div class="pattern-item">
+        <div class="pattern-num">03</div>
+        <div class="pattern-left">
+          <div class="pattern-name">No Completion Signal</div>
+          <div class="pattern-tag">Metacognitive Blindness</div>
+          <p class="pattern-mechanism">Humans regulate behavior through accurate self-knowledge. You cannot make an informed decision to stop if you have no sense of how long you've been in an experience or how much you've consumed. Unlike a book with pages remaining or a video with a visible runtime, TikTok offers no completion signal, no progress indicator, no natural endpoint. The architecture is specifically designed to prevent the cognitive moment where you ask "have I had enough?"</p>
+        </div>
+        <div class="pattern-right">
+          <div class="pattern-cost-label">User cost</div>
+          <p class="pattern-cost">Time loss without conscious consent. Users consistently underestimate session length by 40-60% in research contexts.</p>
+          <p class="pattern-cite">Kahneman (2011), Thinking Fast and Slow; Baumeister et al. (1998), Ego depletion</p>
+        </div>
+      </div>
+
+      <div class="pattern-item">
+        <div class="pattern-num">04</div>
+        <div class="pattern-left">
+          <div class="pattern-name">Variable Reward Architecture</div>
+          <div class="pattern-tag">Dopaminergic Exploitation</div>
+          <p class="pattern-mechanism">Dopamine does not spike at reward receipt, it spikes at the anticipation of uncertain reward. Variable ratio reinforcement, the same schedule that powers slot machines, produces the most compulsive and extinction-resistant behavior of any reward schedule studied. TikTok's feed is a perfect implementation: occasionally a video genuinely delights, usually it doesn't. The ratio, not the quality, is the mechanism that keeps the thumb moving.</p>
+        </div>
+        <div class="pattern-right">
+          <div class="pattern-cost-label">User cost</div>
+          <p class="pattern-cost">Compulsive continuation driven by neurological anticipation rather than conscious choice. The wanting system becomes decoupled from the liking system.</p>
+          <p class="pattern-cite">Schultz (1997), Dopamine reward prediction; Skinner (1957), Variable ratio schedules; Berridge & Robinson (1998), Wanting vs. liking</p>
+        </div>
+      </div>
+
+      <div class="pattern-item">
+        <div class="pattern-num">05</div>
+        <div class="pattern-left">
+          <div class="pattern-name">Sound-On Autoplay</div>
+          <div class="pattern-tag">Involuntary Attention Capture</div>
+          <p class="pattern-mechanism">The brain has two attention systems: voluntary (endogenous) attention, which you direct consciously, and involuntary (exogenous) attention, triggered automatically by salient stimuli, sudden movement, bright color, unexpected sound. Sound-on autoplay is a direct trigger of the exogenous system. You are already watching before voluntary attention has had the chance to evaluate whether you wanted to.</p>
+        </div>
+        <div class="pattern-right">
+          <div class="pattern-cost-label">User cost</div>
+          <p class="pattern-cost">Intentional choice is bypassed at the point of entry. Every session begins with the involuntary system in control.</p>
+          <p class="pattern-cite">Corbetta & Shulman (2002), Two-network model of attention; Yantis & Jonides (1984), Attentional capture</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE 2 -->
+<div class="marquee-strip" style="background:var(--green);">
+  <div class="marquee-inner" style="animation-direction:reverse;">
+    <span style="color:var(--black);">Default Mode Network</span>
+    <span style="color:var(--black);">&#9679; Elaborative Encoding</span>
+    <span style="color:var(--black);">&#9679; Variable Ratio Reinforcement</span>
+    <span style="color:var(--black);">&#9679; Exogenous Attention</span>
+    <span style="color:var(--black);">&#9679; Metacognitive Blindness</span>
+    <span style="color:var(--black);">&#9679; Schema Formation</span>
+    <span style="color:var(--black);">&#9679; Default Mode Network</span>
+    <span style="color:var(--black);">&#9679; Elaborative Encoding</span>
+    <span style="color:var(--black);">&#9679; Variable Ratio Reinforcement</span>
+    <span style="color:var(--black);">&#9679; Exogenous Attention</span>
+    <span style="color:var(--black);">&#9679; Metacognitive Blindness</span>
+    <span style="color:var(--black);">&#9679; Schema Formation</span>
+  </div>
+</div>
+
+<!-- SECTION 4: REDESIGN -->
+<section class="case-section dark" id="redesign">
+  <svg class="miro-bg" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <circle class="mf-a" cx="1100" cy="300" r="90" fill="#7EF285" opacity="0.04"/>
+    <circle class="mf-b" cx="100" cy="800" r="60" fill="#FFE600" opacity="0.04"/>
+    <polygon class="mf-c" points="1050,900 1090,970 1010,970" fill="#EF3274" opacity="0.07"/>
+  </svg>
+  <div style="position:relative;z-index:1;max-width:1100px;">
+    <p class="section-eyebrow">04: Speculative Redesign</p>
+    <h2>Three Interventions: One Argument</h2>
+    <div class="prose" style="margin-bottom:0;">
+      <p>These are not a full product overhaul. They are three targeted, minimal interventions, each one addressing a specific cognitive mechanism identified in the audit. Each is framed as a speculative proposal that acknowledges the real business constraints TikTok operates under.</p>
+    </div>
+
+    <div class="redesign-grid">
+
+      <!-- INTERVENTION 1 -->
+      <div class="redesign-item">
+        <div class="redesign-text">
+          <div class="redesign-num">01</div>
+          <div class="redesign-title">The Reflection Pause</div>
+          <div class="redesign-targets">Targets: Autoplay Zero Gap · DMN Suppression</div>
+          <p class="redesign-body">A 2-3 second dark screen between every video. Imperceptible to the conscious user, but a change that is actually cognitively significant, giving enough time for the Default Mode Network to briefly activate and the previous video to begin processing.</p>
+          <div class="redesign-why">
+            <div class="redesign-why-label">The cognitive science</div>
+            <div class="redesign-why-text">DMN activation requires only 1-2 seconds of unoccupied attention. Even a minimal pause allows the brain to begin the elaborative encoding process that autoplay currently forecloses entirely.</div>
+          </div>
+          <div class="business-case">
+            <div class="business-case-label">Business case</div>
+            <div class="business-case-text">Barely perceptible to users. Significant as a regulatory goodwill gesture as governments in the EU and UK increasingly scrutinize autoplay mechanics in platforms used by minors.</div>
+          </div>
+        </div>
+        <div>
+          <div class="phone-mockup tiktok-current">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="tt-video-fill">
+                <div class="tt-autoplay-badge">● autoplaying</div>
+                <div class="tt-actions">
+                  <div class="tt-action"><div class="tt-action-dot"></div></div>
+                  <div class="tt-action"><div class="tt-action-dot"></div></div>
+                  <div class="tt-action"><div class="tt-action-dot"></div></div>
+                </div>
+                <div class="tt-info">
+                  <div class="tt-username">@username</div>
+                  <div class="tt-caption">caption text goes here #fyp #trending</div>
+                </div>
+                <div class="tt-next-indicator"></div>
+              </div>
+              <div class="tt-nav">
+                <div class="tt-nav-dot active"></div>
+                <div class="tt-nav-dot active"></div>
+                <div class="tt-nav-dot"></div>
+                <div class="tt-nav-dot"></div>
+                <div class="tt-nav-dot"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- INTERVENTION 2 -->
+      <div class="redesign-item">
+        <div class="redesign-text">
+          <div class="redesign-num">02</div>
+          <div class="redesign-title">The Session Mirror</div>
+          <div class="redesign-targets">Targets: No Completion Signal · Metacognitive Blindness</div>
+          <p class="redesign-body">At natural exit points, when the app is backgrounded or closed, a single screen surfaces accurate session data: time spent, number of videos watched, topics encountered. The point is not to make the user feel judgment or issue a warning. Just provide information they currently do not have access to.</p>
+          <div class="redesign-why">
+            <div class="redesign-why-label">The cognitive science</div>
+            <div class="redesign-why-text">Metacognitive research consistently shows that accurate self-knowledge is a prerequisite for self-regulation. You cannot make an informed choice about how long to spend on something if you have no accurate information about how long you've been doing it.</div>
+          </div>
+          <div class="business-case">
+            <div class="business-case-label">Business case</div>
+            <div class="business-case-text">Transparency features are increasingly a regulatory expectation. Building them proactively is cheaper than building them reactively. Reduces the burnout-driven app deletion that costs TikTok its most engaged users.</div>
+          </div>
+        </div>
+        <div>
+          <div class="phone-mockup">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="rs-mirror">
+                <div class="rs-mirror-header">Session summary</div>
+                <div class="rs-stat-row">
+                  <span class="rs-stat-label">Time spent</span>
+                  <span class="rs-stat-val warn">1h 14m</span>
+                </div>
+                <div class="rs-stat-row">
+                  <span class="rs-stat-label">Videos watched</span>
+                  <span class="rs-stat-val">83</span>
+                </div>
+                <div class="rs-stat-row">
+                  <span class="rs-stat-label">Avg per video</span>
+                  <span class="rs-stat-val">53s</span>
+                </div>
+                <div class="rs-topics">
+                  <div class="rs-topic-label">Topics encountered</div>
+                  <span class="rs-topic-pill">cooking</span>
+                  <span class="rs-topic-pill">politics</span>
+                  <span class="rs-topic-pill">humor</span>
+                  <span class="rs-topic-pill">fashion</span>
+                  <span class="rs-topic-pill">fitness</span>
+                  <span class="rs-topic-pill">news</span>
+                  <span class="rs-topic-pill">animals</span>
+                  <span class="rs-topic-pill">diy</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- INTERVENTION 3 -->
+      <div class="redesign-item">
+        <div class="redesign-text">
+          <div class="redesign-num">03</div>
+          <div class="redesign-title">The Depth Offramp</div>
+          <div class="redesign-targets">Targets: No Accumulation · Shallow Processing</div>
+          <p class="redesign-body">A persistent, unobtrusive button on every video that opens curated long-form content on the same topic, a documentary, a podcast episode, a long read. An escape route from lateral browsing into something that can actually build knowledge.</p>
+          <div class="redesign-why">
+            <div class="redesign-why-label">The cognitive science</div>
+            <div class="redesign-why-text">Schema formation, the building of coherent knowledge structures, requires sustained engagement with a topic over time. The offramp doesn't fix the feed; it creates an alternative path for users who want to go deeper on something that caught their attention.</div>
+          </div>
+          <div class="business-case">
+            <div class="business-case-label">Business case</div>
+            <div class="business-case-text">Increases time-on-platform via longer content. Improves advertiser brand safety metrics by associating TikTok with educational use cases. Differentiates from competitors in the ongoing regulatory and PR conversation about platform responsibility.</div>
+          </div>
+        </div>
+        <div>
+          <div class="phone-mockup">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="rs-offramp" style="padding:1rem;">
+                <div class="rs-video-thumb">
+                  <span class="rs-offramp-badge">Go deeper</span>
+                </div>
+                <div class="rs-offramp-title">How Gaza's hospitals ran out of supplies · 34 min, Al Jazeera</div>
+                <div class="rs-offramp-meta">Because you watched: "what's actually happening in Gaza rn"</div>
+                <div class="rs-offramp-btn">Watch now →</div>
+                <div style="margin-top:0.75rem;border-top:1px solid #111;padding-top:0.75rem;">
+                  <div class="rs-offramp-title" style="color:#aaa;">Also related</div>
+                  <div class="rs-offramp-meta" style="margin-top:0.3rem;">Podcast: The Daily · Long read: The New Yorker · UN situation report</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 5: REFLECTION -->
+<section class="case-section mid" id="reflection">
+  <div style="position:relative;z-index:1;max-width:1100px;">
+    <p class="section-eyebrow">05: Reflection</p>
+    <h2>What I'd Do<br>With More Time</h2>
+    <div class="prose">
+      <p>Again, this is a speculative proposal and not a shipped product. The honest constraints of working outside the company without access to usage data, engineering feasibility assessments, or the ability to run A/B tests, means every intervention here is a hypothesis, and not a proof. Yet here is what I strongly still believe effective follow-up would look like.</p>
+    </div>
+    <div class="reflection-grid">
+      <div class="reflection-card">
+        <div class="reflection-card-label">What I'd test first</div>
+        <p class="reflection-card-body">The Reflection Pause is the highest-leverage, lowest-friction intervention. I'd design an A/B test measuring retention of content (can users recall what they watched?) across pause vs. no-pause conditions. Even a modest improvement in retention would be a significant finding. I'd also measure whether the pause increases or decreases session abandonment, the key business risk.</p>
+      </div>
+      <div class="reflection-card">
+        <div class="reflection-card-label">Larger research pool</div>
+        <p class="reflection-card-body">Secondary research is honest and legitimate, but primary user interviews would add texture this project lacks, particularly around the ADHD population, who appear differentially vulnerable to these patterns. The question of whether heavy TikTok use is causing attention difficulties or attracting people who already have them is unresolved in the literature and genuinely important.</p>
+      </div>
+      <div class="reflection-card">
+        <div class="reflection-card-label">The business case needs pressure-testing</div>
+        <p class="reflection-card-body">I've argued these interventions are survivable for TikTok's business model. That argument is reasoned but not quantified. A real product proposal would need modeling: what's the estimated session time impact of the pause? What's the lifetime value difference between a burned-out churned user and a moderately-engaged retained one? Those numbers would either strengthen or complicate the case.</p>
+      </div>
+      <div class="reflection-card">
+        <div class="reflection-card-label">What this project is actually arguing</div>
+        <p class="reflection-card-body">The deeper claim here is that ethical design and business success are not mutually exclusive, but that making them compatible requires treating user cognitive wellbeing as a design constraint from the start, not a PR afterthought. This project is one attempt to show what that might look like in practice. The system is loud. Design doesn't have to be.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section style="background:var(--pink);text-align:center;padding:6rem 2.5rem;position:relative;overflow:hidden;">
+  <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;" viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <circle class="mf-a" cx="100" cy="100" r="70" fill="#FFE600" opacity="0.18"/>
+    <circle class="mf-b" cx="1100" cy="300" r="50" fill="#080808" opacity="0.08"/>
+    <polygon class="mf-c" points="1050,60 1090,130 1010,130" fill="#7EF285" opacity="0.2"/>
+  </svg>
+  <div style="position:relative;z-index:1;">
+    <p style="font-size:0.6rem;letter-spacing:0.25em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:1rem;">Get in touch</p>
+    <h2 style="font-family:var(--display);font-size:clamp(2.5rem,7vw,5rem);color:var(--white);line-height:0.95;margin-bottom:1.5rem;">Let's make<br><em style="font-family:var(--serif);font-style:italic;color:var(--yellow);">something loud!</em></h2>
+    <p style="font-family:var(--serif);font-size:1.1rem;font-style:italic;color:rgba(255,255,255,0.75);margin-bottom:2.5rem;">Open to collaborations, feedback, and conversations about design, ethics, and disruption.</p>
+    <a href="mailto:hello@meghakumar.com" style="font-family:var(--mono);font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;padding:1rem 2.5rem;background:var(--black);border:2px solid var(--black);color:var(--white);text-decoration:none;display:inline-block;transition:all 0.2s;">Say hello</a>
+  </div>
+</section>
+
+<footer>
+  <span>&copy; 2026 Megha Kumar</span>
+  <span>Designer / Researcher / Essayist</span>
+</footer>
+
+</body>
+</html>

@@ -315,8 +315,8 @@
   </svg>
   <div style="position:relative;z-index:2;">
     <p class="case-hero-label">UX Audit / Speculative Redesign / 2026</p>
-    <h1>The Attention<em>Economy.</em></h1>
-    <p class="case-hero-sub">TikTok isn't just addictive. Its architecture is fundamentally incompatible with the cognitive processes that make information meaningful, and that's a design problem.</p>
+    <h1 style="font-size:clamp(3rem,7vw,7rem);line-height:1.15;">Cognitive Overwhelm<br><span style="font-size:0.3em;letter-spacing:0.15em;font-style:normal;">and the</span><br><em style="white-space:nowrap;">ATTENTION ECONOMY</em></h1>
+
     <div class="case-meta">
       <div class="meta-item">
         <div class="meta-label">Discipline</div>
@@ -341,23 +341,11 @@
 <!-- VIDEO -->
 <section class="video-section">
   <div class="video-wrap">
-    <div class="video-placeholder">
-      <span class="video-label">Watch first</span>
-      <!-- Animated circles representing cognitive overload -->
-      <div class="vc" style="width:180px;height:180px;background:#EF3274;opacity:0.12;top:-40px;left:-40px;animation:floatA 5s ease-in-out infinite;"></div>
-      <div class="vc" style="width:100px;height:100px;background:#FFE600;opacity:0.1;bottom:20px;right:60px;animation:floatB 7s ease-in-out infinite;"></div>
-      <div class="vc" style="width:60px;height:60px;background:#0057FF;opacity:0.15;top:40px;right:120px;animation:floatC 4s ease-in-out infinite;"></div>
-      <div class="vc" style="width:40px;height:40px;background:#7EF285;opacity:0.12;bottom:60px;left:80px;animation:floatA 6s ease-in-out infinite;"></div>
-      <div class="vc" style="width:20px;height:20px;background:#EF3274;opacity:0.2;top:100px;left:200px;animation:floatB 3s ease-in-out infinite;"></div>
-      <div class="video-placeholder-inner">
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="24" cy="24" r="23" stroke="#222" stroke-width="1.5"/>
-          <polygon points="20,16 34,24 20,32" fill="#EF3274" opacity="0.8"/>
-        </svg>
-        <p class="video-play">90 sec animation, add your video embed here</p>
-      </div>
-    </div>
-
+    <p style="font-family:var(--display);font-size:1.3rem;color:var(--white);letter-spacing:0.08em;margin-bottom:1rem;">Pixels.</p>
+    <video controls style="width:100%;display:block;border:1px solid #222;">
+      <source src="IMG_1606.mp4" type="video/mp4">
+    </video>
+    <p style="font-family:var(--mono);font-size:0.55rem;color:#555;letter-spacing:0.08em;margin-top:0.75rem;">A short animation inspired by Filmbilder's Nuggets.</p>
   </div>
 </section>
 
@@ -386,11 +374,11 @@
     <p class="section-eyebrow">01: The Problem</p>
     <h2>The Empty<br>Calories Problem</h2>
     <div class="thesis-block">
-      <p>TikTok's architecture is not merely addictive, it is <em>structurally incompatible</em> with the cognitive processes that make information meaningful. By eliminating every gap between stimuli, it systematically prevents reflection, elaborative encoding, and retention. The result: hours of consumption that build nothing.</p>
+      <p style="font-style:normal;">Bluntly put, apps like TikTok have architecture that eliminates every gap between stimuli, systematically prevents reflection, elaborative encoding, and retention, resulting in hours of consumption that leave you feeling worse. Which begs the question, what are you getting in return for your time and attention?</p>
     </div>
     <div class="prose">
-      <p>You open TikTok and within seconds, a video of devastating war footage plays. Before you've had even a moment to sit with it, the feed has already moved you on to someone's comedic brain rot content. Then a recipe. Then a political debate. Then something absurd. This constant whiplash between serious and trivial content is not incidental, it is the design. And it desensitizes us. Repeatedly. Each piece of content flies in and flies right back out, leaving us unable to say what we actually gleaned from an hour-long session. It is all a blur.</p>
-      <p>This isn't a failure of memory or attention on your part. It's the predictable output of a system <strong>engineered to produce exactly this.</strong> The endless lateral stream, the autoplay with no gap, the algorithm calibrated purely to hold you through the next 15 seconds, these are not neutral features. They are decisions that have cognitive consequences.</p>
+      <p>The feed is designed to produce constant context-switching. Serious to absurd, devastating to trivial, all with no pause in between. This isn't incidental to the experience, it is the architecture itself. Content flies in and out before it can land, and will leave nothing behind.</p>
+      <p>This isn't a failure of memory or attention on your part. It's the predictable output of a system <strong style="color:var(--green);">engineered to produce exactly this.</strong> The endless lateral stream, the autoplay with no gap, the algorithm calibrated purely to hold you through the next 15 seconds, these are not neutral features. They are decisions that have cognitive consequences.</p>
       <p>This audit names those consequences precisely, using the cognitive science literature that the people who built these systems also read. Then it proposes what ethical alternatives might look like, not to destroy the product, but to ask what it could be if the user's cognitive wellbeing were a design constraint.</p>
     </div>
   </div>
@@ -475,6 +463,7 @@
         <div class="pattern-right">
           <div class="pattern-cost-label">User cost</div>
           <p class="pattern-cost">Content is experienced but never processed. Hours of consumption that produce no durable understanding of anything watched.</p>
+
         </div>
       </div>
 
@@ -574,7 +563,7 @@
           <div class="redesign-num">01</div>
           <div class="redesign-title">The Reflection Pause</div>
           <div class="redesign-targets">Targets: Autoplay Zero Gap · DMN Suppression</div>
-          <p class="redesign-body">A 2-3 second dark screen between every video. No UI. No prompt. Just space. Imperceptible to the conscious user, but cognitively significant, enough time for the Default Mode Network to briefly activate and the previous video to begin processing.</p>
+          <p class="redesign-body">A 2-3 second dark screen between every video. Imperceptible to the conscious user, but a change that is actually cognitively significant, giving enough time for the Default Mode Network to briefly activate and the previous video to begin processing.</p>
           <div class="redesign-why">
             <div class="redesign-why-label">The cognitive science</div>
             <div class="redesign-why-text">DMN activation requires only 1-2 seconds of unoccupied attention. Even a minimal pause allows the brain to begin the elaborative encoding process that autoplay currently forecloses entirely.</div>
@@ -746,7 +735,7 @@
   </svg>
   <div style="position:relative;z-index:1;">
     <p style="font-size:0.6rem;letter-spacing:0.25em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:1rem;">Get in touch</p>
-    <h2 style="font-family:var(--display);font-size:clamp(2.5rem,7vw,5rem);color:var(--white);line-height:0.95;margin-bottom:1.5rem;">Let's make<br><em style="font-family:var(--serif);font-style:italic;color:var(--yellow);">something loud.</em></h2>
+    <h2 style="font-family:var(--display);font-size:clamp(2.5rem,7vw,5rem);color:var(--white);line-height:0.95;margin-bottom:1.5rem;">Let's make<br><em style="font-family:var(--serif);font-style:italic;color:var(--yellow);">something loud!</em></h2>
     <p style="font-family:var(--serif);font-size:1.1rem;font-style:italic;color:rgba(255,255,255,0.75);margin-bottom:2.5rem;">Open to collaborations, feedback, and conversations about design, ethics, and disruption.</p>
     <a href="mailto:hello@meghakumar.com" style="font-family:var(--mono);font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;padding:1rem 2.5rem;background:var(--black);border:2px solid var(--black);color:var(--white);text-decoration:none;display:inline-block;transition:all 0.2s;">Say hello</a>
   </div>
